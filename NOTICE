@@ -1,0 +1,16 @@
+Independent StepStone MCP connector
+Copyright (c) 2026 Ahmed Elkashef
+
+Conceptual and prior connector reference:
+  kdkiss/mcp-stepstone and contributors
+  https://github.com/kdkiss/mcp-stepstone
+  Reviewed commit cb3d7f8f8d985499547db6f0095d74e5b9e11e7c
+  Upstream README section "License" declares MIT.
+  No standalone LICENSE file is present at that commit.
+
+This repository is an independent rewrite and copies no upstream implementation,
+test fixtures or recorded job pages. It is not a GitHub fork and is not affiliated
+with or endorsed by StepStone. StepStone and related marks belong to their owners.
+
+The MIT license applies to the new source and synthetic fixtures in this
+repository. Provider content and provider service access are not licensed here.

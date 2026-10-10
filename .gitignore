@@ -1,0 +1,11 @@
+.venv/
+__pycache__/
+.pytest_cache/
+*.egg-info/
+build/
+dist/
+.env*
+*.checkpoint.json
+*.html
+*.pdf
+*.log
