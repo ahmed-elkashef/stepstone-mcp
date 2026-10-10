@@ -68,6 +68,12 @@ advert sections. It does not shorten descriptions or fall back to menus and
 related jobs. HTML/JSON-LD is preserved alongside plain text. Missing employment
 types, locations, pay or dates remain missing. A relative date or a date without
 a timezone is never converted into an invented publication instant.
+Listing pages also contain a native JSON record. When available, it is matched
+by exact vacancy ID and supplies original `datePosted`, separate publication/
+expiry fields, salary, benefits, harmonised ID, the raw home-office code and
+explicit query/pagination metadata. The connector never executes page scripts
+and omits user state, recommendation scores and tracking URL parameters.
+Undocumented home-office codes stay raw; they are not inferred worker eligibility.
 
 ## CLI
 
@@ -126,7 +132,7 @@ The test suite uses synthetic source records and mocked HTTP. It verifies full
 text preservation, multi-location/mixed employment metadata, exact date
 provenance, robot matching, blocked requests and redirects, errors, rate cooldown,
 false-empty prevention, page 7 resume, immutable checkpoint bounds and MCP error
-flags. Live tests are deliberately bounded and do not run in CI. Current source
+flags, native/DOM reconciliation and exclusion of user state. Live tests are deliberately bounded and do not run in CI. Current source
 availability is separate from fixture correctness.
 
 ## Credits and license

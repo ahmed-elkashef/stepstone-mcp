@@ -60,7 +60,8 @@ class StepStoneClient:
                               details={"requested_radius_km": radius, "displayed_radius_km": observed_radius})
         result.update({"requested_query": {"zip_code": zip_code, "radius": radius, "page": page, "age_days": age_days},
                        "observed_at": datetime.now(timezone.utc).isoformat()})
-        age_verified = age_days == 0 or parse_qs(urlsplit(final_url).query).get("ag") == [f"age_{age_days}"]
+        native_age = result["source_query_metadata"].get("age")
+        age_verified = age_days == 0 or (native_age == age_days or parse_qs(urlsplit(final_url).query).get("ag") == [f"age_{age_days}"])
         result["query_envelope_verified"] = observed_radius == radius and age_verified
         if observed_radius is None:
             result["warnings"].append("Displayed radius is unverified.")

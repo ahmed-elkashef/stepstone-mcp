@@ -92,6 +92,42 @@ def test_listing_metadata_and_pagination_are_preserved_separately_from_full_text
     assert result["coverage_complete"] is False
 
 
+def with_native_state(html, *, radius=30, count=2, ids=(101,), next_page=2):
+    state = {'user': {'secret': 'DO_NOT_RETAIN'}, 'searchResults': {
+        'resultFilterInfo': {'numberOfResults': count},
+        'categorization': {'radius': radius, 'age': 7, 'orderBy': 'relevance', 'userId': 'DO_NOT_RETAIN'},
+        'unifiedPagination': {'page': 1, 'pageCount': 2, 'links': {'next': f'/jobs/in-10115?siteId=250&action=paging_next&page={next_page}'}},
+        'items': [{'id': identifier, 'datePosted': '2026-10-09T10:00:00Z',
+                   'publishFromDate': '2026-10-09T12:00:00Z', 'publishToDate': '2026-11-01T00:00:00Z',
+                   'workFromHome': '2', 'cvToJobScore': 'DO_NOT_RETAIN', 'harmonisedId': 'synthetic-stable-key'} for identifier in ids]}}
+    return html + '<script>window.__PRELOADED_STATE__["app-unifiedResultlist"] = ' + json.dumps(state) + '; throw new Error("MUST_NOT_EXECUTE");</script>'
+
+
+def test_embedded_native_metadata_is_matched_by_id_and_does_not_retain_user_state():
+    result = parse_listing_html(with_native_state(listing()), LISTING)
+    assert result['jobs'][0]['publication']['original_value'] == '2026-10-09T10:00:00Z'
+    assert result['jobs'][0]['source_date_fields']['publishFromDate'] == '2026-10-09T12:00:00Z'
+    assert result['jobs'][0]['work_from_home_code'] == '2'
+    assert result['jobs'][0]['harmonised_id'] == 'synthetic-stable-key'
+    assert result['next_url'].endswith('siteId=250&action=paging_next&page=2')
+    assert result['source_query_metadata']['orderBy'] == 'relevance'
+    assert 'DO_NOT_RETAIN' not in json.dumps(result)
+
+
+def test_native_parser_losses_and_dom_conflicts_do_not_disappear():
+    result = parse_listing_html(with_native_state(listing(), ids=(101,102)), LISTING)
+    assert result['malformed_cards'] == [{'id':'102','reason':'native_record_not_rendered'}]
+    with pytest.raises(SourceError) as error:
+        parse_listing_html(with_native_state(listing(), radius=25), LISTING)
+    assert error.value.code == 'query_metadata_conflict'
+    with pytest.raises(SourceError) as error:
+        parse_listing_html(with_native_state(listing(), count=3), LISTING)
+    assert error.value.code == 'count_metadata_conflict'
+    with pytest.raises(SourceError) as error:
+        parse_listing_html(with_native_state(listing(), next_page=7), LISTING)
+    assert error.value.code == 'invalid_continuation'
+
+
 def test_changed_layout_and_wrong_page_are_errors():
     with pytest.raises(SourceError) as error:
         parse_listing_html("<h1>Error page</h1>", LISTING)

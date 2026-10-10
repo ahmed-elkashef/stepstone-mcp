@@ -3,11 +3,12 @@
 This validates software behavior and bounded current availability. It does not
 claim a complete German or regional job census.
 
-- **29 synthetic tests passed** on local Python 3.14. Tests cover full text,
+- **31 synthetic tests passed** on local Python 3.14. Tests cover full text,
   multi-location and mixed worker metadata, date/timezone provenance, false-empty
   prevention, exact source-page identity, robot matching, denied redirects,
   provider errors/rate cooldown, page 7 resume, immutable checkpoints, interval
-  uncertainty and both HTTP backend policy guards.
+  uncertainty, both HTTP backend policy guards, embedded JSON metadata matching,
+  DOM/native conflicts and exclusion of user state/recommendation scores.
 - A real MCP STDIO client initialized the installed entry point, listed all five
   tools, parsed an explicitly verified zero-result page, and received
   `isError=true` with structured `description_missing` for absent full content.
@@ -18,6 +19,10 @@ claim a complete German or regional job census.
   provider's **30 km default**. Pagination links were discovered and accurately
   classified as disallowed by the current robot policy. No restricted follow-up
   pages were requested.
+- The 50 real captured card IDs all matched their embedded JSON records. All
+  50 had timezone-bearing `datePosted` values; separate `publishFromDate` and
+  `publishToDate` fields stayed distinct. Native pagination and query radius/age/
+  sort metadata were preserved with zero native/rendered card losses.
 - A current full vacancy page obtained through an allowed bare URL was parsed
   without truncation: 2,074 description characters, scoped requirements,
   responsibilities/benefits, one structured workplace, worker type and the

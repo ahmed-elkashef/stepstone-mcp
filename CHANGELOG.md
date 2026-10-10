@@ -9,4 +9,5 @@
 - Optional explicitly selected ordinary Node HTTP backend with the same policy.
 - Integrity-checked, parameter/interval-bound pagination checkpoints and safe resume.
 - Distinct terminal pagination, listing coverage and unverified interval membership.
-- JSON CLI and STDIO MCP with correct error flags and 29 synthetic tests.
+- Embedded listing JSON metadata with exact ID matching and no page-script execution.
+- JSON CLI and STDIO MCP with correct error flags and 31 synthetic tests.
